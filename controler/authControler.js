@@ -50,29 +50,13 @@ module.exports.signUp = async (req, res) => {
   try {
     await user.save();
     const url = `${process.env.CLIENT_URL}/verify/${user.userId}/activate/${user.token}`;
-
-    await sendEmail(
-      user.email,
-      "Validation de votre email sur SearchMeri",
-      `
-       <div style="background-color: #FFFFFF;margin:auto;font-family:'Montserrat', sans-serif;@import url('https://fonts.cdnfonts.com/css/montserrat');max-height: 400px;width: 100%;text-align: center;"  class="container">
-    <h1>Bienvenue sur SearchMeri</h1>
-    <p>Appuyez sur le bouton ci-dessous pour confirmer votre adresse e-mail. Si vous n'avez pas créé de compte avec , vous pouvez supprimer cet e-mail en toute sécurité.</p>
-    <br/>
-    <p>Ce lien <b> expire dans un délai de 1h</b></p>
-    <button style="background-color: #1A82E2;border:none;padding:15px;border-radius: 10px;cursor:pointer;">  <a style="color: black;" href=${url}> Cliquez sur ce lien pour finaliser l'inscription</a></button>
-    <p>Si cela ne fonctionne pas, copiez et collez le lien suivant dans votre navigateur : ${url}</p> 
-
-  </div> 
-      `
-    );
   } catch (error) {
     return res.status(500).json({
       message:
         "Erreur interne du serveur, veuillez réessayez plus tard : " + error,
     });
   }
-  return res.status(201).json({ message: `L'utilisateur créer avec success` });
+  return res.status(201).json({ message: `Création de compte réussie` });
 };
 
 // CONNECTEZ AU SITE AVEC CES COORDONNEES APRES AVOIR VERIFIEZ LE MAIL
@@ -128,7 +112,7 @@ module.exports.signIn = async (req, res, next) => {
     expiresIn: "3d",
   });
 
-  res.cookie(String(existingUser._id), token, {
+  res.cookie("searchMeri", token, {
     path: "/",
     expires: new Date(Date.now() + 1000 * 1000 * 1000),
     httpOnly: true,
